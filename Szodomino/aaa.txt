@@ -1,5 +1,4 @@
-malom
-lomhalmaz
-lomha
-mazohista
-halom
+abcd
+ab
+bc
+cd

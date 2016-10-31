@@ -4,7 +4,8 @@ Ami eddig megvan:
 	Egy ciklus ami végig megy az összesszón és az összes szóval (magát leszámítva) megvizsgálja az egyezést, és kiírja.
 
 Ami kell:
-	Sokminden
+	
+	Egy algoritmus a ami fába gyüjti a potenciális sorrend alapján a szavakat.
 
 Ismert hibák:
 	Nincs
@@ -29,7 +30,7 @@ for sz,szo in ipairs(szavak) do
 	print()
 end]]
 
-local function egyezesS(s1,s2) -- egy oldalról megvizsgálja a ez egyezést
+function egyezesS(s1,s2) -- egy oldalról megvizsgálja a ez egyezést
 
 	local max = 1
 	local megyezo = ""
@@ -69,21 +70,23 @@ local function egyezesS(s1,s2) -- egy oldalról megvizsgálja a ez egyezést
 
 	max = max-1
 
-	if max==#s2 and not (mpos.kezdo==1 or mpos.vegzo==#s1) then 
+	local elolrol = (mpos.kezdo==1)
+	local hatulrol = (mpos.vegzo==#s1)
+
+	if not (elolrol or hatulrol) then 
 		max = 0 
 		megyezo = "" 
 	end
 
-	return max, megyezo
+	return max, megyezo, hatulrol
 end
 
 function egyezes(s1,s2) -- kétoldalról megvizsgálja az egyezést és hogy meg kell-e fordítani (kimenet: EgyezésHossza, EgyezőKarakterek, MegKellEFordítani)
-	local m1,m2
-	local e1,e2
-	m1,e1 = egyezesS(s1,s2)
-	m2,e2 = egyezesS(s2,s1)
-	if m1>=m2 then return m1,e1,false end -- nem kell megfordítani
-	return m2,e2,true -- meg kell fordítani
+	local m1,m2,e1,e2,b1,b2
+	m1,e1,b1 = egyezesS(s1,s2)
+	m2,e2,b2 = egyezesS(s2,s1)
+	if m1>=m2 then return m1,e1, not b1 end 
+	return m2,e2,b2
 end
 
 --print(egyezes(szavak[1],szavak[2]))
