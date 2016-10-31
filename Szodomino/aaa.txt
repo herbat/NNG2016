@@ -1,4 +1,4 @@
-abcd
-ab
-bc
-cd
+aaabbb
+abbb
+aaa
+bbb
