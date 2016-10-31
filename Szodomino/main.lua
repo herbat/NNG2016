@@ -1,7 +1,13 @@
 --[[
 Ami eddig megvan:
 	Egy függvény ami megmondja két szóról hogy mennyi a közös tartalmuk, mi az, és hogy milyen sorrendben kell lenniük.
-	Egy ciklus ami végig megy az összesszón és az összes szóval (magát leszámítva) meg
+	Egy ciklus ami végig megy az összesszón és az összes szóval (magát leszámítva) megvizsgálja az egyezést, és kiírja.
+
+Ami kell:
+	Sokminden
+
+Ismert hibák:
+	Nincs
 ]]
 
 io.stdout:setvbuf("no") -- azonnali print a consolba
