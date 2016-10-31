@@ -1,7 +1,7 @@
 --[[
 Ami eddig megvan:
 	Egy függvény ami megmondja két szóról hogy mennyi a közös tartalmuk, mi az, és hogy milyen sorrendben kell lenniük.
-	Egy ciklus ami végig megy az összesszón és az összes szóval (magát leszámítva) megvizsgálja az egyezést, és kiírja.
+	Egy ciklus ami végig megy az összes szón és az összes szóval (magát leszámítva) megvizsgálja az egyezést, és kiírja.
 
 Ami kell:
 	
@@ -18,19 +18,10 @@ szavak = {}
 for line in io.lines("aaa.txt") do
 	szo = {}
 	line:gsub(".",function(c) table.insert(szo,c) end) -- karakterekre bontja a szót
-	table.insert(szavak,szo) -- a szavakhoz adja a szót
+	table.insert(szavak,{szo=szo,egyezes={}}) -- a szavakhoz adja a szót
 end
 
-
---[[ kiíratás
-for sz,szo in ipairs(szavak) do
-	for c,char in ipairs(szo) do
-		print(sz,c,char)
-	end
-	print()
-end]]
-
-function egyezesS(s1,s2) -- egy oldalról megvizsgálja a ez egyezést
+local function ket_szo_egyezese_seged(s1,s2) -- egy oldalról megvizsgálja a ez egyezést
 
 	local max = 1
 	local megyezo = ""
@@ -81,23 +72,47 @@ function egyezesS(s1,s2) -- egy oldalról megvizsgálja a ez egyezést
 	return max, megyezo, hatulrol
 end
 
-function egyezes(s1,s2) -- kétoldalról megvizsgálja az egyezést és hogy meg kell-e fordítani (kimenet: EgyezésHossza, EgyezőKarakterek, MegKellEFordítani)
+local function table2szo(t) -- stringé alakítja a táblában tárolt szót
+	local szo = ""
+	for i,v in ipairs(t) do
+		szo=szo..v
+	end
+	return szo
+end 
+
+
+function ket_szo_egyezes(s1,s2) -- kétoldalról megvizsgálja az egyezést és hogy meg kell-e fordítani (kimenet: EgyezésHossza, EgyezőKarakterek, MegKellEFordítani)
 	local m1,m2,e1,e2,b1,b2
-	m1,e1,b1 = egyezesS(s1,s2)
-	m2,e2,b2 = egyezesS(s2,s1)
-	if m1>=m2 then return m1,e1, not b1 end 
-	return m2,e2,b2
+	m1,e1,b1 = ket_szo_egyezese_seged(s1,s2)
+	m2,e2,b2 = ket_szo_egyezese_seged(s2,s1)
+	--[[if m1>=m2 then return m1,e1, not b1 end 
+	return m2,e2,b2]]
+	if m1>=m2 then return m1, not b1 end -- egyező karakterek feleslegesek
+	return m2,b2
 end
 
---print(egyezes(szavak[1],szavak[2]))
-
-for i,s1 in ipairs(szavak) do
-	for j,s2 in ipairs(szavak) do
-		if i~=j then
-			print(i,j,"|",egyezes(s1,s2))
+function egy_szo_egyezese_a_tobbivel(j)
+	for s,t in ipairs(szavak) do
+		if j~=s then --ha nem saját maga
+			local hossz,fordit = ket_szo_egyezes(szavak[j].szo,t.szo)
+			if hossz>0 then
+				table.insert(szavak[j].egyezes,{id=s,hossz=hossz,b=fordit})
+			end
 		end
 	end
 end
 
+
+-- kiíratás
+for s,t in ipairs(szavak) do
+	egy_szo_egyezese_a_tobbivel(s)
+	print(s,table2szo(t.szo))
+		for e,egy in ipairs(t.egyezes) do
+			print("",egy.id,egy.hossz,egy.b)
+		end
+end
+
+
 -- love-ből kilépés (csak a lua kell)
 love.event.quit()
+
