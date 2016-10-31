@@ -13,13 +13,7 @@ Ismert hibák:
 
 io.stdout:setvbuf("no") -- azonnali print a consolba
 
- --beolvasás: minden sortban egy szót, és azt felbontom kerakterekre.
-szavak = {}
-for line in io.lines("aaa.txt") do
-	szo = {}
-	line:gsub(".",function(c) table.insert(szo,c) end) -- karakterekre bontja a szót
-	table.insert(szavak,{szo=szo,egyezes={}}) -- a szavakhoz adja a szót
-end
+FILENAME = "aaa.txt"
 
 --[[
 ]]
@@ -85,34 +79,53 @@ function ket_szo_egyezes(s1,s2) -- kétoldalról megvizsgálja az egyezést és 
 	end
 end
 
-function egy_szo_egyezese_a_tobbivel(j)
-	for s,t in ipairs(szavak) do
-		if j~=s then --ha nem saját maga
-			local hossz,fordit = ket_szo_egyezes(szavak[j].szo,t.szo)
-			if hossz>0 then
-				table.insert(szavak[j].egyezes,{id=s,hossz=hossz})
-			end
-		end
-	end
-end
-
 
 --[[
 ]]
 
-local sorok = {}
-for s,t in ipairs(szavak) do
-	egy_szo_egyezese_a_tobbivel(s)
-	table.insert(sorok,{})
-end
+file = io.open("ki.txt","w+")
 
-for s,t in ipairs(szavak) do
-	print(table2szo(t.szo))
-	for e,egy in ipairs(t.egyezes) do
-		print("",table2szo(szavak[egy.id].szo),egy.hossz)
+local elso1 = false -- azért van hogy ne írjon vessző az utolsó adatok után
+
+for line1 in io.lines(FILENAME) do -- végig iterál a txt szavain
+	local s1 = {}
+	line1:gsub(".",function(c) table.insert(s1,c) end) -- karakterekre bontja a szót
+
+	local maxhossz = 0
+	local maxszo = ""
+
+	print(line1)
+	if elso1 then file:write(",\n") else elso1=true end
+	file:write("\""..line1.."\":{\n")
+	local elso2 = false -- azért van hogy ne írjon vessző az utolsó adatok után
+
+	for line2 in io.lines(FILENAME) do
+		local s2 = {}
+		line2:gsub(".",function(c) table.insert(s2,c) end)
+
+		if line1~=line2 then --ha nem saját maga
+			local hossz = ket_szo_egyezes(s1,s2)
+			if hossz>maxhossz then --maximum keresés
+				maxhossz=hossz
+				maxszo=line2
+			end
+			if hossz>0 then -- kiírja ha van egyezés
+				if elso2 then file:write(",\n") else elso2=true end
+				file:write("	\""..line2.."\":"..hossz)
+				print("",line2,hossz)
+			end
+		end
+	end
+
+	file:write("\n}")
+
+	if maxhossz~=0 then
+		--file:write("\""..line1.."\":{".."\n	\""..maxszo.."\":"..maxhossz.."\n},\n")
+		--print(line1,maxszo,maxhossz)
 	end
 end
 
+file.close()
 
 -- love-ből kilépés (csak a lua kell)
 love.event.quit()
