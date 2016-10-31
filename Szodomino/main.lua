@@ -111,7 +111,7 @@ file = io.open("ki.txt","w+")
 for s,t in ipairs(szavak) do
 	file:write([["]]..table2szo(t.szo)..[["]]..":{\n")
 	for e,egy in ipairs(t.egyezes) do
-		file:write("	"..table2szo(szavak[egy.id].szo)..":"..egy.hossz.."\n")
+		file:write([[	"]]..table2szo(szavak[egy.id].szo)..[[":]]..egy.hossz.."\n")
 	end
 	file:write("}\n")
 end
