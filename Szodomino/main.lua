@@ -106,12 +106,17 @@ for s,t in ipairs(szavak) do
 	table.insert(sorok,{})
 end
 
+file = io.open("ki.txt","w+")
+
 for s,t in ipairs(szavak) do
-	print(table2szo(t.szo))
+	file:write([["]]..table2szo(t.szo)..[["]]..":{\n")
 	for e,egy in ipairs(t.egyezes) do
-		print("",table2szo(szavak[egy.id].szo),egy.hossz)
+		file:write("	"..table2szo(szavak[egy.id].szo)..":"..egy.hossz.."\n")
 	end
+	file:write("}\n")
 end
+
+file:close()
 
 
 -- love-ből kilépés (csak a lua kell)

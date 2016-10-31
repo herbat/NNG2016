@@ -1,0 +1,14 @@
+"almaspite":{
+	tepsi:2
+}
+"alma":{
+	almaspite:4
+}
+"tepsi":{
+}
+"tealm":{
+	almaspite:3
+	alma:3
+}
+"xxy":{
+}
