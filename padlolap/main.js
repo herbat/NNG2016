@@ -2,18 +2,20 @@
 /*jshint esnext:true */
 /*jshint unused:false*/
 
-var fs      = require('fs'),
-    through = require('through2'),
-    fname   = '/Users/atus/Documents/NNG/padlolap/num.txt';
+var fs       = require('fs'),
+    through  = require('through2'),
+    finname  = '/Users/atus/Documents/NNG/padlolap/num.txt',
+    foutname = '/Users/atus/Documents/NNG/padlolap/out.txt';
 
 function halver() {
 
-    var rS = fs.createReadStream(fname, {highWaterMark:1}),//open file stream
+    var rS = fs.createReadStream (finname, {highWaterMark:1}),//open file stream
+        wS = fs.createWriteStream(foutname),
         stream = through(write, end),//create transform stream
         r = 0;//remainder
 
-    rS.on('open', () => {rS.pipe(stream);
-                         stream.pipe(process.stdout);});//pipe it into our transform stream
+    rS.on('open', () => {rS.pipe(stream); stream.pipe(wS);});
+    //pipe out through transform stream
 
     function write(buffer, enc, next) {
         var res;
