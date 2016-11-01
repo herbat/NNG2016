@@ -7,10 +7,10 @@ var fs       = require('fs'),
     finname  = '/Users/atus/Documents/NNG/padlolap/num.txt',
     foutname = '/Users/atus/Documents/NNG/padlolap/out.txt';
 
-function halver() {
+function half() {
 
     var rS = fs.createReadStream (finname, {highWaterMark:1}),//open file stream
-        wS = fs.createWriteStream(foutname),
+        wS = fs.createWriteStream(foutname),//open outfile stream
         stream = through(write, end),//create transform stream
         r = 0;//remainder
 
@@ -19,11 +19,11 @@ function halver() {
 
     function write(buffer, enc, next) {
         var res;
-        buffer = parseInt(buffer.toString());
-
+        buffer = parseInt(buffer.toString());//buf to int
+        //division by 2
         if (isWhole(buffer/2)) {res = buffer/2     + r; r = 0;}
         else                   {res = buffer/2-0.5 + r; r = 5;}
-        this.push(res.toString());
+        this.push(res.toString());//push to outstream
         next();
 
         function isWhole(n) {return n%1===0;}
@@ -32,6 +32,6 @@ function halver() {
     function end(done){done();}
 }
 
-halver();
+half();
 
 
