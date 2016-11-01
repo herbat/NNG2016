@@ -16,8 +16,14 @@ function half(n) {
         count  = 0;//counter to do exactly the desired amount of digits
 
     rS.on('open', () => {rS.pipe(stream); stream.pipe(wS);});
-
     //pipe out through transform stream
+
+    function padZeroes(n){
+        for(var i = 0; i < n-1; i++){
+            wS.write('0');
+        }
+        wS.write('1');
+    }
 
     function write(buffer, enc, next) {
         function isWhole(n) {return n%1===0;}
@@ -32,19 +38,14 @@ function half(n) {
 
         //close on too many digits
         count++;
-        if(count > n) rS.close();
+        if(count > n) {rS.close(); padZeroes(n);}
         next();
 
     }
 
-    function padZeroes(n){
-        for(var i = 0; i < n-1; i++){
-            wS.write(0);
-        }
-        wS.write(1);
-    }
 
-    function end(done){padZeroes(n); done();}
+
+    function end(done){ done();}
 }
 
 half(9);
