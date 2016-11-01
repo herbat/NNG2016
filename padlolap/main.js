@@ -38,7 +38,7 @@ function half(n) {
 
         //close on too many digits
         count++;
-        if(count > n) {rS.close(); padZeroes(n);}
+        if(count >= n) {rS.close(); padZeroes(n);}
         next();
 
     }
@@ -48,6 +48,6 @@ function half(n) {
     function end(done){ done();}
 }
 
-half(9);
+half(10000);
 
 
