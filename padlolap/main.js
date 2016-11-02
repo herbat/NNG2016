@@ -38,7 +38,7 @@ function half(n) {
 
         //close on too many digits
         count++;
-        if(count >= n) {rS.close(); padZeroes(n);}
+        if(count > n) {rS.close();}
         next();
 
     }
@@ -46,6 +46,18 @@ function half(n) {
     function end(done){ done();}
 }
 
-half(10000);
+function checker(n){
+    var res = 0;
+    for(var i = 0; i < n; i++){
+        res += Math.floor(1.41421356 * i) + 1;
+    }
+    console.log(res);
+}
+
+for(var x = 999990; x < 1000001; x++){
+    checker(x);
+}
+
+half(12);
 
 
